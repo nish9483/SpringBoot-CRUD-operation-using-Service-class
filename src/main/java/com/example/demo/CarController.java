@@ -1,8 +1,11 @@
 package com.example.demo;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -18,46 +21,49 @@ public class CarController {
 	@Autowired
 	private CarService carService;
 	
-	@PostMapping("/car")
-	public String saveCar(@RequestBody Car car)
+	@PostMapping("/cars")
+	public ResponseEntity<Car>saveCar(@RequestBody Car car)
 	{
-		carService.save(car);
-		return "added suucessfully";
+		Car c= carService.saveCar(car);
+		return new ResponseEntity<Car>(c,HttpStatus.CREATED);
+	}
+	
+	@GetMapping("/cars")
+	public ResponseEntity<List<Car>>getAllCar()
+	{
+		List<Car> c= carService.getAllCar();
+		return new ResponseEntity<List<Car>>(c,HttpStatus.OK);
 	}
 	
 	
-	@GetMapping("/car")
-	public List<Car> getAllEmployee()
+	@GetMapping("/cars/{id}")
+	public ResponseEntity<Car>getCarById(@PathVariable int id)
 	{
-		return carService.selectAllEmployee();
+    Car c=carService.getCarById(id);
+    
+    	 return new ResponseEntity<Car>(c,HttpStatus.OK);
+    	 
+	}
+     
+    	 
+     
+	@PutMapping("/cars/{id}")
+	public ResponseEntity<Car>updateCar(@RequestBody Car car ,@PathVariable int id)
+	{
+		car.setId(id);
+		Car c=carService.updateCar(car);
+	    
+	    	 return new ResponseEntity<Car>(c,HttpStatus.OK);
+	     }
+	     
+
+	@DeleteMapping("/cars/{id}")
+	public ResponseEntity<Void>deleteCar(@PathVariable int id)
+	{
+		carService.deleteCar(id);
+	     
+	    	 return new ResponseEntity<Void>(HttpStatus.OK);
+	    
+	}
 		
 	}
-	
-	
-	@GetMapping("/car/{id}")
-	public Car getEmployeeById(@PathVariable int id)
-	{
-		return carService.selectById(id);
-	}
-	
-	@PutMapping("/car/{id}")
-	public  String updateCar(@RequestBody Car car)
-	{
-		carService.modify(car);
-		return"successfully updated";
-	}
-	
-	@DeleteMapping(value= {"/car"})
-	public String deleteCar(@RequestParam int id)
-	{
-		carService.deleteById(id);
-		return "deleted";
-	}
-	
-	@DeleteMapping("/car/{id}")
-	public String deleteCar1(@PathVariable int id)
-	{
-		carService.deleteById(id);
-		return "deleted";
-	}
-}

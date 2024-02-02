@@ -14,43 +14,42 @@ public class CarServiceImpl implements CarService {
 	private CarRepo carRepo;
 	
 	@Override
-	public void  save(Car car)
+	public Car  saveCar(Car car)
 	{
-		carRepo.save(car);
+		return carRepo.save(car);
 	}
 	
 	@Override
-	public void  modify(Car car)
+	public List<Car> getAllCar()
 	{
-		carRepo.save(car);
+		return carRepo.findAll();
 	}
 
 	
 	@Override
-	public void  deleteById(int id)
+	public Car getCarById(int id)
+	{
+		Optional<Car>c=carRepo.findById(id);
+		return c.get();
+	}
+
+	@Override
+	public Car updateCar(Car car)
+	{
+		Car ca=carRepo.findById(car.getId()).get();
+		
+		ca.setName(car.getName());
+		ca.setModel(car.getModel());
+		Car c=carRepo.save(ca);
+		return c;
+	}
+		
+	
+	@Override
+	public void deleteCar(int id) 
 	{
 		carRepo.deleteById(id);
-	}
-
-	@Override
-	public Car  selectById(int id)
-	{
 		
-		Optional<Car>c=carRepo.findById(id);
-		if(c.isPresent())
-		{
-			return c.get();
-		}
-		return null;
 	}
-	
-	@Override
-	public List<Car> selectAllEmployee()
-	{
 		
-		Iterable<Car>c=carRepo.findAll();
-		List<Car>l=new ArrayList<Car>();
-		c.forEach(ele->l.add(ele));
-		return l;
-}
-}
+	}
